@@ -1,13 +1,13 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-
 import { Layout } from './components/Layouts/Layout';
+import NewsFeed from './components/NewsFeed/NewsFeed';
 
 function App() {
   return (
     <React.Fragment>
       <Layout>
-        coming soon...
+        <NewsFeed />
       </Layout>
     </React.Fragment>
   );
