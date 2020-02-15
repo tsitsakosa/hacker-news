@@ -21,11 +21,11 @@ class NewsFeed extends Component {
             .then(response => {
                 const articles = response.data.slice(0, this.offset);
                 this.setState({ latestArticlesIds: articles });
-                console.debug(this.state.latestArticlesIds);
+                //console.debug(this.state.latestArticlesIds);
                 this.fetchLatestArticles();
             })
             .catch(error => {
-                console.debug("fetchLatestArticlesIds :", error);
+                //console.debug("fetchLatestArticlesIds :", error);
                 this.setState({ error: true });
             });
     }
@@ -40,7 +40,7 @@ class NewsFeed extends Component {
         let promises = [];
 
         currentPageArticlesIds.forEach(id => {
-            console.debug(id);
+            //console.debug(id);
             promises.push(axios.get('/v0/item/' + id + '.json'));
         });
 
@@ -48,7 +48,7 @@ class NewsFeed extends Component {
             results.forEach(response => {
                 const data = response.data;
                 currentArticles.push(data);
-                console.debug(response.data);
+                //console.debug(response.data);
             });
             this.setState({ currentArticles: currentArticles, isLoading: false }
             );
@@ -60,21 +60,15 @@ class NewsFeed extends Component {
     }
 
     render() {
-        let articles = <Alert variant="danger">Something went wrong! Try later..</Alert>;
+        let articles = {};
         if (this.state.isLoading) {
             articles = <MyLoader />
         }
         else if (!this.state.error) {
             articles = this.state.currentArticles.map(article => {
                 return <Article
+                    story = {article}
                     key={article.id}
-                    id={article.id}
-                    title={article.title}
-                    by={article.by}
-                    time={article.time}
-                    url={article.url}
-                    score={article.score}
-                    descendants={article.descendants}
                 />;
             });
             articles = <Row>{articles}</Row>

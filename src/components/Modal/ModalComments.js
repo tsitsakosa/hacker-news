@@ -13,7 +13,9 @@ const modalComments = (props) => {
                     <Modal.Title id={"modal-comments-title-" + props.story.id}>{props.story.title}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Comments />
+                    {
+                        props.story.descendants >= 1 ? <Comments parent={props.story} kids={props.story.kids} /> : null
+                    }
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={props.closeHandler}>
