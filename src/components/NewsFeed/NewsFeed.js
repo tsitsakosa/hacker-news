@@ -6,6 +6,7 @@ import MyLoader from '../Loader/Loader'
 
 
 class NewsFeed extends Component {
+    offset = 6;
     state = {
         latestArticlesIds: [],
         latestArticles: [],
@@ -18,7 +19,7 @@ class NewsFeed extends Component {
     fetchLatestArticlesIds = () => {
         axios.get('/v0/topstories.json')
             .then(response => {
-                const articles = response.data.slice(0, 6);
+                const articles = response.data.slice(0, this.offset);
                 this.setState({ latestArticlesIds: articles });
                 console.debug(this.state.latestArticlesIds);
                 this.fetchLatestArticles();
@@ -30,10 +31,10 @@ class NewsFeed extends Component {
     }
 
     fetchLatestArticles = () => {
-        const offset = 7;
+       
         const currentPage = this.state.currentPage;
-        const firstItem = currentPage * offset - offset;
-        const lastItem = currentPage * offset - 1;
+        const firstItem = currentPage * this.offset - this.offset;
+        const lastItem = currentPage * this.offset;
         const currentPageArticlesIds = this.state.latestArticlesIds.slice(firstItem, lastItem);
         const currentArticles = [];
         let promises = [];
@@ -49,10 +50,6 @@ class NewsFeed extends Component {
                 currentArticles.push(data);
                 console.debug(response.data);
             });
-            const newState = {
-                currentArticles: currentArticles,
-                isLoading: false
-            }
             this.setState({ currentArticles: currentArticles, isLoading: false }
             );
         });
