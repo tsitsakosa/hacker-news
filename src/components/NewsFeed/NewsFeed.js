@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Row, Alert } from 'react-bootstrap';
 import Article from './Article';
 import axios from '../../axiosRequests';
+import MyLoader from '../Loader/Loader'
 
 
 class NewsFeed extends Component {
@@ -10,7 +11,8 @@ class NewsFeed extends Component {
         latestArticles: [],
         currentPage: 1,
         currentArticles: [],
-        error: false
+        error: false,
+        isLoading: true
     }
 
     fetchLatestArticlesIds = () => {
@@ -47,7 +49,12 @@ class NewsFeed extends Component {
                 currentArticles.push(data);
                 console.debug(response.data);
             });
-            this.setState({ currentArticles: currentArticles });
+            const newState = {
+                currentArticles: currentArticles,
+                isLoading: false
+            }
+            this.setState({ currentArticles: currentArticles, isLoading: false }
+            );
         });
     }
 
@@ -57,16 +64,23 @@ class NewsFeed extends Component {
 
     render() {
         let articles = <Alert variant="danger">Something went wrong! Try later..</Alert>;
-        if (!this.state.error) {
+        if (this.state.isLoading) {
+            articles = <MyLoader />
+        }
+        else if (!this.state.error) {
             articles = this.state.currentArticles.map(article => {
                 return <Article
                     key={article.id}
                     id={article.id}
                     title={article.title}
-                     />;
+                />;
             });
             articles = <Row>{articles}</Row>
         }
+        else {
+            articles = <Alert variant="danger">Something went wrong! Try later..</Alert>;
+        }
+
         return (
             <React.Fragment>
                 {articles}
