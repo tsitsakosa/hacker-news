@@ -73,6 +73,11 @@ class NewsFeed extends Component {
                     key={article.id}
                     id={article.id}
                     title={article.title}
+                    by={article.by}
+                    time={article.time}
+                    url={article.url}
+                    score={article.score}
+                    descendants={article.descendants}
                 />;
             });
             articles = <Row>{articles}</Row>
