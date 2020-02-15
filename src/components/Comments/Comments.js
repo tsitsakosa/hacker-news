@@ -9,20 +9,29 @@ class Comments extends Component {
         comments: [],
         error: false,
         isLoading: true,
-        parent: this.props.parent
+        story: this.props.parent
     }
 
-    fetchComments = (item) => {
+    counter = 0;
 
+    fetchComments = (item, descendants) => {
         if (item.kids) {
-
-            let promises = [];
+            let promises = []
             item.kids.forEach(id => {
-                debugger;
-                promises.push(axios.get('/v0/item/' + id + '.json'));
+                const axiosPromise = axios.get('/v0/item/' + id + '.json');
+                promises.push(axiosPromise);
+                this.counter++;
+                console.log("Counter!!!!", descendants, this.counter);
+                //Last request
+                
+                if (this.counter == descendants) {
+                    axiosPromise.then(() => {
+                        console.log("Comments fetched", this.state);
+                    });
+                }
             });
 
-            return Promise.all(promises).then(results => {
+            Promise.all(promises).then(results => {
                 const comments = [];
                 results.forEach(response => {
                     const data = response.data;
@@ -32,18 +41,15 @@ class Comments extends Component {
                 item.kids = comments;
 
                 item.kids.forEach(kid => {
-                    
-                    this.fetchComments(kid);
-                    
+
+                    this.fetchComments(kid, descendants);
+
                 });
                 //this.setState({ comments: comments, isLoading: false });
                 // console.debug(this.state);
                 //
 
             });
-        }
-        else {
-            return true;
         }
         // else {
         //     this.setState({ comments: null, isLoading: false });
@@ -52,10 +58,15 @@ class Comments extends Component {
     }
 
     componentDidMount() {
-        this.fetchComments(this.state.parent)
-            .then(() => {
-                console.debug("final call", this.state);
-            });
+        console.log(this.state);
+        if (this.state.story.descendants > 0) {
+            const topParent = this.state.story;
+            const descendants = this.state.story.descendants;
+            this.counter = 0;
+            this.fetchComments(topParent, descendants);
+        }
+
+
     }
 
     render() {
