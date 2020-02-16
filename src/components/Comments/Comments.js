@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import {  Alert } from 'react-bootstrap';
+import { Alert } from 'react-bootstrap';
 import axios from '../../axiosRequests'
 import CommentList from './CommentList'
+import MyLoader from '../Loader/Loader';
 
 class Comments extends Component {
 
     //descendants counter
-    counter = 1;
 
     state = {
         error: false,
@@ -14,19 +14,25 @@ class Comments extends Component {
         story: this.props.parent,
     }
 
+    counter = 1;
+    topParent = this.state.story;
+
     fetchComments = (comment, descendants) => {
         if (comment.kids) {
             let promises = []
             comment.kids.forEach(kid => {
+                console.log(this.counter, descendants);
                 let axiosPromise = axios.get('/v0/item/' + kid + '.json');
                 promises.push(axiosPromise);
 
                 //Last request should be track
                 if (this.counter === descendants) {
                     axiosPromise.then(() => {
-                        // Data fetched ready to be rendered
-                        this.setState({ isLoading: false });
-                        console.debug("Comments fetched", this.state.story);
+                        Promise.all(promises).then(() => {
+                            // Data fetched ready to be rendered
+                            this.setState({ isLoading: false, story: this.topParent });
+                            console.debug("Comments fetched", this.state.story);
+                        });
                     });
                 }
                 this.counter++;
@@ -54,18 +60,18 @@ class Comments extends Component {
 
     componentDidMount() {
         // Fetch whole story with comments
-        if (this.state.story.descendants > 0) {
-            const topParent = this.state.story;
-            const descendants = this.state.story.descendants;
+        const descendants = this.state.story.descendants;
+
+        if (descendants > 0) {
             this.counter = 1;
-            this.fetchComments(topParent, descendants);
+            this.fetchComments(this.topParent, descendants);
         }
     }
 
     render() {
         let comments = {};
         if (this.state.isLoading) {
-            comments = <div>isLoading...</div>
+            comments = <MyLoader />
         }
         else {
             if (!this.state.error) {

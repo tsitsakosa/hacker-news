@@ -2,12 +2,6 @@ import React from 'react';
 import { Markup } from 'interweave';
 
 const CommentList = (props) => {
-    const listOfComment = '';
-
-    // const commentItem = (item) => {
-    //     return <li id={item.id}> <Markup content={item.text} /></li>;
-    // }
-
     const commentItem = (item) => {
         return (
             <li key={item.commentData.id} id={item.commentData.id}>

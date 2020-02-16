@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Col, Card, Button } from 'react-bootstrap';
 import Moment from 'react-moment';
-import Comments from '../Modal/ModalComments';
 
 const Article = (props) => {
     const [commentsShowState, setCommentsShowState] = useState(false);
@@ -34,11 +33,7 @@ const Article = (props) => {
                         <div className="text-muted d-flex flex-row">
                             <span className="text-nowrap">Posted: <Moment fromNow unix>{props.story.time}</Moment></span>
                             <span className="mx-1">-</span>
-                            <Button variant="link" className="text-muted p-0"
-                                onClick={handleShowComments}>{props.story.descendants} {props.story.descendants === 1 ? "comment" : "comments"}</Button>
-                            <Comments show={commentsShowState}
-                                closeHandler={handleCloseComment}
-                                story={props.story} />
+                            <a href={"/Comments/"+ props.story.id} className="btn btn-link text-muted p-0">{props.story.descendants} {props.story.descendants === 1 ? "comment" : "comments"}</a>
                         </div>
                     </div>
                 </Card.Body>
