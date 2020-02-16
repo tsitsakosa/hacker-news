@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Row, Alert } from 'react-bootstrap';
+import {  Alert } from 'react-bootstrap';
 import axios from '../../axiosRequests'
-
+import CommentList from './CommentList'
 
 class Comments extends Component {
 
@@ -12,7 +12,6 @@ class Comments extends Component {
         error: false,
         isLoading: true,
         story: this.props.parent,
-        error: false
     }
 
     fetchComments = (comment, descendants) => {
@@ -23,11 +22,11 @@ class Comments extends Component {
                 promises.push(axiosPromise);
 
                 //Last request should be track
-                if (this.counter == descendants) {
+                if (this.counter === descendants) {
                     axiosPromise.then(() => {
                         // Data fetched ready to be rendered
                         this.setState({ isLoading: false });
-                        console.debug("Comments fetched", this.state);
+                        console.debug("Comments fetched", this.state.story);
                     });
                 }
                 this.counter++;
@@ -64,28 +63,30 @@ class Comments extends Component {
     }
 
     render() {
-        // let comments = {};
-        // if (this.state.isLoading) {
-        //     comments = <div>isLoading...</div>
-        // }
-        // else if (!this.state.error) {
-
-        //     if (this.state.comments !== null) {
-        //         comments = this.state.comments.map(comment => {
-        //             //console.log("<---------COMMENT--------->", comment);
-
-        //             return <li key={comment.id}><Comments parent={comment}/></li>;
-        //         });
-        //         comments = <ul>{comments}</ul>
-        //     }
-        // }
-        // else {
-        //     comments = <Alert variant="danger">Something went wrong! Try later..</Alert>;
-        // }
+        let comments = {};
+        if (this.state.isLoading) {
+            comments = <div>isLoading...</div>
+        }
+        else {
+            if (!this.state.error) {
+                // console.debug("lololoolo", this.state.story['comments']);
+                //debugger;
+                const story = this.state.story
+                if (story['comments']) {
+                    comments = <CommentList data={story['comments']} />
+                }
+                else {
+                    comments = <div>Comment first!</div>
+                }
+            }
+            else {
+                comments = <Alert variant="danger">Something went wrong! Try later..</Alert>;
+            }
+        }
 
         return (
             <React.Fragment>
-                {/* {comments} */}
+                {comments}
             </React.Fragment>
         );
     }
