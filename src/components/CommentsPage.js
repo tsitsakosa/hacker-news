@@ -17,7 +17,6 @@ class CommentsPage extends Component {
         this.setState({ isNotRequested: false });
         axios.get('/v0/item/' + id + '.json')
             .then(results => {
-                console.log(results);
                 this.setState({ parent: results.data, isLoading: false });
             });
     }

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Alert } from 'react-bootstrap';
+import { Alert, Button } from 'react-bootstrap';
 import axios from '../../axiosRequests'
 import CommentList from './CommentList'
 import MyLoader from '../Loader/Loader';
@@ -16,6 +16,10 @@ class Comments extends Component {
 
     counter = 1;
     topParent = this.state.story;
+
+    goBack = () => {
+        window.history.back();
+    }
 
     fetchComments = (comment, descendants) => {
         if (comment.kids) {
@@ -44,8 +48,6 @@ class Comments extends Component {
                         comments.push({ id: data.id, commentData: data });
                     });
                     comment.comments = comments;
-
-
                     comment.comments.forEach(item => {
                         this.fetchComments(item.commentData, descendants);
                     });
@@ -89,10 +91,12 @@ class Comments extends Component {
         return (
             <React.Fragment>
                 {comments}
+                <div className="mb-3 d-flex flex-row justify-content-center">
+                    <Button variant="outline-primary" onClick={this.goBack}>Go Back</Button>
+                </div>
             </React.Fragment>
         );
     }
-
 }
 
 export default Comments;
