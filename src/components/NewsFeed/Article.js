@@ -41,9 +41,7 @@ const Article = (props) => {
                                 story={props.story} />
                         </div>
                     </div>
-
                 </Card.Body>
-
             </Card>
         </Col >
     )

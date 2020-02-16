@@ -14,7 +14,7 @@ const modalComments = (props) => {
                 </Modal.Header>
                 <Modal.Body>
                     {
-                        props.story.descendants >= 1 ? <Comments parent={props.story} kids={props.story.kids} /> : null
+                        props.story.descendants >= 1 ? <Comments parent={props.story} /> : null
                     }
                 </Modal.Body>
                 <Modal.Footer>
