@@ -21,7 +21,6 @@ class Comments extends Component {
         if (comment.kids) {
             let promises = []
             comment.kids.forEach(kid => {
-                console.log(this.counter, descendants);
                 let axiosPromise = axios.get('/v0/item/' + kid + '.json');
                 promises.push(axiosPromise);
 
@@ -31,7 +30,6 @@ class Comments extends Component {
                         Promise.all(promises).then(() => {
                             // Data fetched ready to be rendered
                             this.setState({ isLoading: false, story: this.topParent });
-                            console.debug("Comments fetched", this.state.story);
                         });
                     });
                 }
@@ -75,8 +73,6 @@ class Comments extends Component {
         }
         else {
             if (!this.state.error) {
-                // console.debug("lololoolo", this.state.story['comments']);
-                //debugger;
                 const story = this.state.story
                 if (story['comments']) {
                     comments = <CommentList data={story['comments']} />
