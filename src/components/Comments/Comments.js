@@ -6,8 +6,6 @@ import MyLoader from '../Loader/Loader';
 
 class Comments extends Component {
 
-    //descendants counter
-
     state = {
         error: false,
         isLoading: true,
@@ -21,40 +19,35 @@ class Comments extends Component {
         window.history.back();
     }
 
-    fetchComments = (comment, descendants) => {
+    fetchComments = async (comment, depth) => {
         if (comment.kids) {
             let promises = []
             comment.kids.forEach(kid => {
                 let axiosPromise = axios.get('/v0/item/' + kid + '.json');
                 promises.push(axiosPromise);
-
-                //Last request should be track
-                if (this.counter === descendants) {
-                    axiosPromise.then(() => {
-                        Promise.all(promises).then(() => {
-                            // Data fetched ready to be rendered
-                            this.setState({ isLoading: false, story: this.topParent });
-                        });
-                    });
-                }
-                this.counter++;
             });
 
-            Promise.all(promises)
-                .then(results => {
-                    const comments = [];
-                    results.forEach(response => {
-                        const data = response.data;
-                        comments.push({ id: data.id, commentData: data });
-                    });
-                    comment.comments = comments;
-                    comment.comments.forEach(item => {
-                        this.fetchComments(item.commentData, descendants);
-                    });
-                })
-                .catch(error => {
-                    this.setState({ error: true });
-                });;
+            try {
+                let results = await Promise.all(promises)
+                const comments = [];
+                results.forEach(response => {
+                    const data = response.data;
+                    comments.push({ id: data.id, commentData: data });
+                });
+
+                console.debug(depth, "start")
+                comment.comments = comments;
+                promises = [];
+                comment.comments.forEach((item, index) => {
+                    console.debug(depth, index)
+                    promises.push(this.fetchComments(item.commentData, depth + 1))
+                });
+                await Promise.all(promises);
+                console.debug(depth, "end")
+            }
+            catch (error) {
+                this.setState({ error: true });
+            }
         }
     }
 
@@ -62,10 +55,17 @@ class Comments extends Component {
         // Fetch whole story with comments
         const descendants = this.state.story.descendants;
 
+        console.debug("story start", this.topParent);
         if (descendants > 0) {
             this.counter = 1;
-            this.fetchComments(this.topParent, descendants);
+            this.fetchComments(this.topParent, 0)
+                .then(() => {
+                    console.debug("story end", this.topParent);
+                    this.setState({ isLoading: false, story: this.topParent })
+                });
+
         }
+
     }
 
     render() {

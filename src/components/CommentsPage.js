@@ -23,7 +23,7 @@ class CommentsPage extends Component {
 
     BlogPost = () => {
         this.fetchItem();
-        return <div>your id </div>;
+        return <></>;
     }
 
     render() {
@@ -41,8 +41,6 @@ class CommentsPage extends Component {
                     <h2 className="mb-4">{parent.title}</h2>
                     <Comments parent={parent} />
                 </div>
-
-
         }
         return (
             <Layout>
