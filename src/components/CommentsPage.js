@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Layout } from './Layouts/Layout';
-import { BrowserRouter as Router, Switch, Route, Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import axios from '../axiosRequests';
 import MyLoader from './Loader/Loader';
 import Comments from './Comments/Comments';
@@ -38,7 +38,11 @@ class CommentsPage extends Component {
             const parent = this.state.parent;
             view =
                 <div>
-                    <h2 className="mb-4">{parent.title}</h2>
+                    <h2 className="mb-4 h4">
+                        <small className="badge badge-pill badge-success mr-3 align-middle" title="Story reputation">{parent.score}</small>
+                        <span>{parent.title}</span>
+                    </h2>
+
                     <Comments parent={parent} />
                 </div>
         }

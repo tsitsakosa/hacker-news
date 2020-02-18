@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
-import { Col, Card, Button } from 'react-bootstrap';
-import Moment from 'react-moment';
+import React from 'react';
+import { Button } from 'react-bootstrap';
 
 const Pager = (props) => {
 

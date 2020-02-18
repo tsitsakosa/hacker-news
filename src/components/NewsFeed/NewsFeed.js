@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Alert, Button } from 'react-bootstrap';
+import { Row, Alert } from 'react-bootstrap';
 import Article from './Article';
 import axios from '../../axiosRequests';
 import MyLoader from '../Loader/Loader';

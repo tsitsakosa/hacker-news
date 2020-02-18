@@ -1,16 +1,28 @@
 import React from 'react';
-import { Markup } from 'interweave';
+import CommentDetails from './CommentDetails';
+import styled from 'styled-components';
 
 const CommentList = (props) => {
+    
+    const Styles = styled.div`
+    .comments-list-wrapper ul{
+        padding-left: 1rem;
+    }
+
+    .comments-list-wrapper > ul{
+        padding-left: 0px;
+    }
+`;
     const commentItem = (item) => {
-        return (
+        return item.commentData.text ?
             <li key={item.commentData.id} id={item.commentData.id}>
-                <Markup content={item.commentData.text} />
-                {(item.commentData.comments ? <ul>
-                    {commentList(item.commentData.comments)}
-                </ul> : null)}
+                <CommentDetails data={item.commentData} />
+                {/* <Markup content={item.commentData.text} /> */}
+                {(item.commentData.comments
+                    ? commentList(item.commentData.comments)
+                    : null)}
             </li>
-        );
+            : null;
     }
 
     const commentList = (story) => {
@@ -19,13 +31,18 @@ const CommentList = (props) => {
             html = story.map(item => {
                 return commentItem(item);
             });
-            return <ul>{html}</ul>;
+            return <ul className="list-unstyled" >{html}</ul>;
         }
         return null;
     }
 
-    return commentList(props.data);
-
+    return (
+        <Styles>
+            <div className="comments-list-wrapper">
+                {commentList(props.data)}
+            </div>
+        </Styles>
+    );
 }
 
 export default CommentList;
